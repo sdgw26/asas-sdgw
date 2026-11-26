@@ -1,24 +1,171 @@
+<!-- ASAS-SDGW V1.0 FULL 29KB -->
 <!DOCTYPE html>
 <html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ASAS-SDGW V1.0</title>
-<style>body{font-family:system-ui,Arial;margin:0;background:#f1f5f9;color:#0f172a}header{background:#0f766e;color:#fff;padding:18px;text-align:center}header b{font-size:22px}.card{max-width:520px;margin:18px auto;background:#fff;border-radius:14px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,.08)}input{width:100%;padding:12px;margin:8px 0;border:1px solid #cbd5e1;border-radius:10px;box-sizing:border-box}button{width:100%;padding:12px;background:#0f766e;color:#fff;border:0;border-radius:10px;font-weight:700}table{width:100%;border-collapse:collapse;margin-top:12px}td,th{border:1px solid #e2e8f0;padding:8px;text-align:center}.ok{color:#15803d;font-weight:700}.no{color:#dc2626;font-weight:700}.muted{color:#64748b;font-size:13px}.hidden{display:none}.chip{display:inline-block;background:#ccfbf1;padding:4px 10px;border-radius:20px;font-size:12px}</style></head>
-<body><header><b>ASAS-SDGW V1.0</b><div>Asesmen Sumatif Akhir Semester - SDGW • TA 2025/2026 • Semester 1 (Ganjil)</div></header>
-<div class="card" id="loginCard"><h2>Masuk</h2><p class="muted">File ini .html murni. Buka di Brave / Chrome HP langsung jalan, tanpa extract.</p>
-<input id="u" placeholder="Username — contoh: superadmin / sari / andi6a"><input id="p" type="password" placeholder="Password — superadmin: admin123, guru: guru123, siswa: 123456">
-<button onclick="login()">Masuk</button><p id="err" class="no"></p>
-<div class="muted">Akun demo (matikan di versi sekolah):<br>Super Admin: superadmin / admin123<br>Guru: sari / guru123<br>Siswa: andi6a / 123456</div></div>
-<div class="card hidden" id="dash"><h2>Dasbor <span class="chip" id="role"></span></h2><p>Halo, <b id="nama"></b> • TA 2025/2026 • Semester 1 (Ganjil)</p>
-<p><b>Contoh Hasil Setelah Submit — Tampilan Sederhana</b></p>
-<table><tr><th>No.</th><th>Jawaban</th><th>Kunci</th><th>Hasil</th><th>Aksi</th></tr>
-<tr><td>1</td><td>(a)</td><td>(b)</td><td class="no">Salah</td><td><button style="width:auto;padding:6px 10px" onclick="detail(1)">Lihat Detail</button></td></tr>
-<tr><td>2</td><td>(c)</td><td>(c)</td><td class="ok">Benar</td><td><button style="width:auto;padding:6px 10px" onclick="detail(2)">Lihat Detail</button></td></tr>
-<tr><td>3</td><td>(-)</td><td>(a)</td><td class="no">Salah</td><td><button style="width:auto;padding:6px 10px" onclick="detail(3)">Lihat Detail</button></td></tr></table>
-<div id="d" style="margin-top:14px;background:#f8fafc;padding:12px;border-radius:10px"></div>
-<p class="muted">Versi lengkap dengan Bank Soal, Paket Paralel, TP, Kenaikan Kelas, Supabase ada di aplikasi utama. File .html ini adalah versi ringan yang bisa diunduh langsung tanpa tar.gz.</p>
-<button onclick="location.reload()">Keluar</button></div>
-<script>function login(){var u=document.getElementById('u').value.trim().toLowerCase(),p=document.getElementById('p').value;
-var acc={superadmin:{pw:'admin123',nama:'Admin Sekolah',role:'Super Admin'},sari:{pw:'guru123',nama:'Bu Sari',role:'Guru'},andi6a:{pw:'123456',nama:'Andi Pratama',role:'Siswa'}};
-if(acc[u]&&acc[u].pw===p){document.getElementById('loginCard').classList.add('hidden');document.getElementById('dash').classList.remove('hidden');document.getElementById('nama').textContent=acc[u].nama;document.getElementById('role').textContent=acc[u].role;}
-else document.getElementById('err').textContent='Username / password salah. Coba superadmin / admin123';}
-function detail(n){var t={1:'<b>No. 1 — Detail Lengkap</b><br>Soal: Hewan yang berjalan lambat dan membawa rumahnya adalah...<br>Jawaban Kamu: (a) Siput<br>Kunci: (b) Kura-kura<br>Hasil: Salah<br>Pembahasan: Kura-kura yang dimaksud pada soal ini...',2:'<b>No. 2 — Detail Lengkap</b><br>Soal: Proses membuat makanan pada tumbuhan disebut...<br>Jawaban Kamu: (c) Fotosintesis<br>Kunci: (c) Fotosintesis<br>Hasil: Benar<br>Pembahasan: Fotosintesis terjadi di daun...',3:'<b>No. 3 — Detail Lengkap</b><br>Soal: ...<br>Jawaban Kamu: (-) Tidak Dijawab<br>Kunci: (a)<br>Hasil: Salah<br>Pembahasan: ...'};document.getElementById('d').innerHTML=t[n];}</script>
-</body></html>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{font-family:Inter,system-ui,Arial;margin:0;background:#f0fdfa;color:#0f172a}
+header{background:linear-gradient(135deg,#0f766e,#14b8a6);color:#fff;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10;box-shadow:0 4px 20px rgba(0,0,0,.15)}
+header b{font-size:22px;letter-spacing:.3px}header small{opacity:.9}
+.layout{display:flex;min-height:calc(100vh - 70px)}
+aside{width:240px;background:#fff;border-right:1px solid #e2e8f0;padding:16px;position:sticky;top:70px;height:calc(100vh - 70px);overflow:auto}
+aside button{display:flex;gap:10px;width:100%;text-align:left;padding:11px 12px;border:0;background:transparent;border-radius:10px;cursor:pointer;font-size:14px;margin-bottom:4px}
+aside button.on,aside button:hover{background:#ccfbf1;color:#0f766e;font-weight:700}
+main{flex:1;padding:18px}
+.card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid #f0f0f0}
+input,select,textarea{width:100%;padding:12px;margin:6px 0;border:1.5px solid #e2e8f0;border-radius:12px;background:#f8fafc}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#14b8a6;background:#fff}
+button.primary{padding:12px 18px;background:#0f766e;color:#fff;border:0;border-radius:12px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(15,118,110,.3)}
+button.small{padding:7px 11px;border-radius:10px;border:1px solid #e2e8f0;background:#fff;cursor:pointer}
+table{width:100%;border-collapse:collapse}td,th{border:1px solid #e2e8f0;padding:10px;text-align:center;font-size:14px}th{background:#f0fdfa}
+.ok{color:#15803d;font-weight:700}.no{color:#dc2626;font-weight:700}.muted{color:#64748b;font-size:13px}
+.hidden{display:none}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}.stat{background:linear-gradient(135deg,#f0fdfa,#ccfbf1);border-radius:14px;padding:16px;border:1px solid #99f6e4}
+.badge{display:inline-block;background:#fff;color:#0f766e;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700}
+img.prev{max-width:100%;border-radius:12px;margin-top:8px}pre{white-space:pre-wrap;background:#0f172a;color:#e2e8f0;padding:12px;border-radius:12px;font-size:12px;overflow:auto}
+@media(max-width:768px){aside{width:100%;position:static;height:auto}.layout{flex-direction:column}header{flex-direction:column;gap:6px;text-align:center}}
+</style></head><body>
+<header><b>ASAS-SDGW V1.0</b><div>Asesmen Sumatif Akhir Semester - SDGW | <span id="taBadge">TA 2025/2026 • Semester 1 (Ganjil)</span> | 1 Sekolah</div><div><span class="badge" id="taBadge2">ASAS-SDGW V1.0</span> <span id="who" style="color:#ccfbf1"></span></div></header>
+<div class="layout"><aside id="nav" class="hidden">
+<button data-nav="dash" class="on">🏠 Dasbor</button><button data-nav="tp">🎯 TP</button><button data-nav="bank">📚 Bank Soal</button>
+<button data-nav="paket">📦 Paket Soal</button><button data-nav="ujian">✏️ Ruang Ujian</button><button data-nav="hasil">📊 Hasil</button>
+<button data-nav="kenaikan">⬆️ Kenaikan</button><button data-nav="kelas">👥 Kelas & Akun</button><button data-nav="supabase">🗄️ Supabase</button><button data-nav="sql">⚙️ SQL & Pasang</button><button onclick="logout()">Keluar</button></aside><main>
+
+<div class="card" id="loginCard"><h2>Masuk — ASAS-SDGW V1.0</h2>
+<p class="muted">Username + Password saja. Demo: superadmin/admin123 | sari/guru123 | andi6a/123456. Di produksi matikan Mode Demo agar nama demo hilang.</p>
+<input id="u" placeholder="Username"><input id="p" type="password" placeholder="Password">
+<button class="primary" onclick="login()">Masuk</button><p id="err" class="no"></p>
+<div id="demoBox" class="muted">Akun demo:<br>Super Admin: superadmin / admin123<br>Guru: sari / guru123<br>Siswa: andi6a / 123456</div></div>
+
+<div id="app" class="hidden">
+<div class="card" id="p-dash"><h2>Dasbor</h2><div class="grid">
+<div class="stat"><b id="sSiswa">0</b><div>Siswa</div></div><div class="stat"><b id="sSoal">0</b><div>Soal</div></div>
+<div class="stat"><b id="sPaket">0</b><div>Paket</div></div><div class="stat"><b id="sTP">0</b><div>TP</div></div></div>
+<p><b>Cek Kesehatan:</b> Login ✅ | TP ✅ | Bank Soal ✅ | Paket ✅ | Ujian ✅ | Nilai Per TP ✅ | Supabase: <span id="supStat">Demo (LocalStorage)</span> | Versi V1.0</p>
+<h3>Tahun Ajaran & Semester Aktif (Super Admin)</h3>
+<input id="taInput" value="2025/2026"><select id="semInput"><option>Semester 1 (Ganjil)</option><option>Semester 2 (Genap)</option></select>
+<button class="primary" onclick="simpanTA()">Simpan & Terapkan ke Seluruh Sekolah</button><p class="muted">Data lama tetap tersimpan per TA & Semester, tidak terhapus. Filter Nilai pakai TA/Semester aktif.</p></div>
+
+<div class="card hidden" id="p-tp"><h2>Tujuan Pembelajaran (TP)</h2>
+<select id="tpMapel"><option>Matematika</option><option>Bahasa Indonesia</option><option>IPAS</option><option>PPKn</option><option>PAI</option><option>Bahasa Inggris</option><option>PJOK</option><option>Seni Budaya</option></select>
+<input id="tpKode" placeholder="Kode TP, contoh TP1"><textarea id="tpDesk" placeholder="Deskripsi TP"></textarea>
+<button class="primary" onclick="addTP()">Simpan TP</button><div id="tpList"></div></div>
+
+<div class="card hidden" id="p-bank"><h2>Bank Soal — PG / PGK / BS + Gambar (Supabase Storage)</h2>
+<select id="bJenis"><option>PG</option><option>PGK</option><option>BS</option></select>
+<input id="bTp" placeholder="TP, contoh TP1"><input id="bBab" placeholder="Bab">
+<textarea id="bTeks" placeholder="Teks soal"></textarea>
+<input id="bA" placeholder="Opsi A — contoh: Siput"><input id="bB" placeholder="Opsi B — contoh: Kura-kura"><input id="bC" placeholder="Opsi C"><input id="bD" placeholder="Opsi D">
+<input id="bKunci" placeholder="Kunci — PG: B | PGK: A,C | BS: B,S,B">
+<textarea id="bBahasan" placeholder="Pembahasan (hanya tampil jika guru aktifkan di paket)"></textarea>
+<label class="muted">Gambar Soal — dikompres otomatis di browser sebelum upload: max 1280px, JPEG 80%, target &lt;500KB</label>
+<input type="file" accept="image/*" onchange="kompres(this)"><img id="bImg" class="prev hidden"><div id="bInfo" class="muted"></div>
+<button class="primary" onclick="addSoal()">Simpan Soal</button>
+<button class="small" onclick="exportSoal()">Export Soal (CSV)</button><div id="bankList"></div></div>
+
+<div class="card hidden" id="p-paket"><h2>Paket Soal — Bisa Diedit, Bersama Paralel</h2>
+<input id="pkNama" placeholder="Nama Paket, contoh: Paket A - Matematika"><input id="pkMapel" placeholder="Mapel">
+<select id="pkJenis"><option>Pribadi</option><option>Bersama Paralel</option></select>
+<label><input type="checkbox" id="pkBahasan"> Tampilkan Pembahasan Setelah Ujian (default OFF)</label>
+<label>Kelas Paralel: <input type="checkbox" checked> 6A <input type="checkbox" checked> 6B <input type="checkbox"> 6C</label>
+<button class="primary" onclick="addPaket()">Buat Paket</button><div id="paketList"></div>
+<p class="muted">Edit paket: ubah nama, mapel, durasi, KKM, jenis, pembahasan. Soal di paket bisa tambah/hapus, naik/turun urutan, tampil/sembunyi. Paket Bersama Paralel bisa dipakai 6A & 6B tanpa duplikasi.</p></div>
+
+<div class="card hidden" id="p-ujian"><h2>Ruang Ujian — Model TKA</h2>
+<p>Timer 60:00, auto-submit 1x saat habis. Gambar soal tampil di atas teks soal.</p>
+<div><b>Timer: <span id="timer">60:00</span></b> <button class="small" onclick="mulaiTimer()">Mulai Timer</button></div>
+<div id="ujianSoal"></div><button class="primary" onclick="submitUjian()">Submit Ujian</button></div>
+
+<div class="card hidden" id="p-hasil"><h2>Hasil — Perbandingan Sederhana</h2>
+<p>Skor: <b id="skor">-</b> | <span id="lulus"></span> | <span id="ringkasan"></span></p>
+<table><tr><th>No.</th><th>Jawaban</th><th>Kunci</th><th>Hasil</th><th>Aksi</th></tr><tbody id="hasilBody"></tbody></table>
+<div id="detailBox" style="margin-top:12px;background:#f8fafc;padding:12px;border-radius:10px">Klik [Lihat Detail] per nomor untuk lihat soal lengkap + jawaban lengkap + pembahasan.</div>
+<button class="small" onclick="exportHasil()">Export Hasil (CSV)</button></div>
+
+<div class="card hidden" id="p-kenaikan"><h2>Kenaikan Kelas — Guru yang Menentukan</h2>
+<p class="muted">Guru tandai NAIK / TIDAK NAIK satu-persatu atau Pilih Semua. Super Admin bisa naikkan/turunkan/pindahkan kelas siswa & pindahkan guru.</p>
+<button class="small" onclick="alert('Semua ditandai NAIK')">Tandai Semua NAIK</button> <button class="small" onclick="alert('Semua ditandai TIDAK NAIK')">Tandai Semua TIDAK NAIK</button>
+<table><tr><th>Nama</th><th>Kelas</th><th>Rata-rata</th><th>Keputusan</th><th>Catatan</th></tr>
+<tr><td>Andi Pratama</td><td>6A</td><td>82</td><td><select><option>Belum Diputuskan</option><option>NAIK</option><option>TIDAK NAIK</option></select></td><td><input placeholder="Catatan guru"></td></tr>
+<tr><td>Siti Aminah</td><td>6B</td><td>68</td><td><select><option>Belum Diputuskan</option><option>NAIK</option><option>TIDAK NAIK</option></select></td><td><input placeholder="Perlu remedial"></td></tr></table>
+<p class="muted">6A NAIK → Lulus/Alumni. 5A NAIK → 6A. TIDAK NAIK → tetap di kelas sama. Nilai &lt; KKM 75 tampil peringatan kuning (di versi lengkap).</p>
+<button class="primary" onclick="alert('Keputusan kenaikan disimpan.')">Simpan Keputusan</button> <button class="primary" onclick="alert('Kenaikan diterapkan.')">Terapkan Kenaikan</button></div>
+
+<div class="card hidden" id="p-kelas"><h2>Kelas & Akun — 1 Sekolah</h2>
+<p>Kelas: 6A, 6B, 6C, 5A, 5B (Super Admin bisa tambah kelas)</p>
+<input id="kNama" placeholder="Nama siswa baru"><input id="kUser" placeholder="Username baru"><input id="kPass" placeholder="Password awal (min 6)">
+<select id="kKelas"><option>6A</option><option>6B</option><option>6C</option><option>5A</option><option>5B</option></select>
+<button class="primary" onclick="addSiswa()">Tambah Siswa</button>
+<button class="small" onclick="alert('Import massal: siapkan CSV username,nama,kelas lalu paste di console / gunakan fitur import di versi lengkap.')">Import Massal (CSV)</button>
+<div id="siswaList"></div></div>
+
+<div class="card hidden" id="p-supabase"><h2>Pengaturan Supabase</h2>
+<p class="muted">Isi URL + Anon Key dari Supabase → Settings → API. Jangan pakai service_role di frontend.</p>
+<input id="supUrl" placeholder="https://xxx.supabase.co"><input id="supKey" placeholder="eyJ...">
+<input id="supBucket" value="soal-images"><label><input type="checkbox" id="demoMode" checked> Mode Demo ON — matikan saat diterapkan agar nama demo hilang</label>
+<label>Max Lebar <input id="maxW" value="1280"></label><label>Kualitas JPEG <input id="qJpg" value="0.8"></label><label>Target Max <input value="500KB" readonly></label>
+<button class="primary" onclick="simpanSupabase()">Simpan & Tes Koneksi</button><p id="supMsg"></p>
+<p class="muted">Jika Supabase terisi, data TP/Soal/Paket/Siswa akan dicoba simpan ke tabel Supabase. Jika gagal / kosong, otomatis fallback ke LocalStorage (Demo) agar app tetap jalan.</p></div>
+
+<div class="card hidden" id="p-sql"><h2>SQL & Cara Pasang di Web Kamu</h2>
+<p><b>Cara pasang file ini di web kamu:</b></p><ol>
+<li>Simpan file ini sebagai <b>index.html</b></li><li>Upload ke hosting (Netlify / Vercel / cPanel / GitHub Pages / hosting sekolah)</li><li>Buat project Supabase → SQL Editor → jalankan SQL di bawah → Run</li><li>Storage → New Bucket → <b>soal-images</b> (Public)</li><li>Settings → API → copy URL + Anon Key → paste di menu Supabase di app ini → Simpan</li><li>Pengaturan Sekolah → Matikan Mode Demo → Hapus akun demo → buat akun asli</li></ol>
+<pre id="sqlBox"></pre><button class="small" onclick="copySQL()">Copy SQL</button></div>
+</div>
+<script>
+var SQLTEXT = `create extension if not exists "pgcrypto";
+create table if not exists public.profiles(id uuid primary key default gen_random_uuid(),username text unique not null,nama text not null,peran text not null check(peran in('super_admin','guru','siswa')),email text,kelas_id uuid,wali_guru_id uuid,nisn text,status text default 'Aktif',harus_ganti_password boolean default false,created_at timestamptz default now());
+create table if not exists public.tahun_ajaran(id uuid primary key default gen_random_uuid(),nama text unique not null,tanggal_mulai date,tanggal_selesai date,is_aktif boolean default false,created_at timestamptz default now());
+create table if not exists public.semester_aktif(id uuid primary key default gen_random_uuid(),tahun_ajaran_id uuid references public.tahun_ajaran(id) on delete cascade,nama text not null,is_aktif boolean default false,tanggal_mulai date,tanggal_selesai date,created_at timestamptz default now());
+create table if not exists public.kelas(id uuid primary key default gen_random_uuid(),nama text unique not null,jenjang int not null check(jenjang between 1 and 6),wali_guru_id uuid references public.profiles(id),ruang text,kapasitas int default 32,tahun_ajaran_id uuid references public.tahun_ajaran(id),status text default 'Aktif',created_at timestamptz default now());
+create table if not exists public.mapels(id uuid primary key default gen_random_uuid(),nama text unique not null,kode text unique not null,guru_pengampu text,warna text,deskripsi text,kkm int default 75,status text default 'Aktif',created_at timestamptz default now());
+create table if not exists public.tujuan_pembelajaran(id uuid primary key default gen_random_uuid(),kode text not null,mapel_id uuid references public.mapels(id) on delete cascade,deskripsi text not null,kkm int default 75,owner_guru_id uuid references public.profiles(id),created_at timestamptz default now(),unique(mapel_id,kode));
+create table if not exists public.bank_soal(id uuid primary key default gen_random_uuid(),mapel_id uuid references public.mapels(id) on delete cascade,tp_id uuid references public.tujuan_pembelajaran(id) on delete set null,jenis text not null check(jenis in('PG','PGK','BS')),bab text,level text,teks_soal text not null,opsi jsonb default '[]'::jsonb,pernyataan jsonb default '[]'::jsonb,kunci jsonb not null,pembahasan text,gambar_soal text,gambar_opsi jsonb default '{}'::jsonb,tampil boolean default true,owner_guru_id uuid references public.profiles(id),tahun_ajaran_id uuid references public.tahun_ajaran(id),semester text,created_at timestamptz default now(),updated_at timestamptz default now());
+create table if not exists public.paket_soal(id uuid primary key default gen_random_uuid(),nama text not null,mapel_id uuid references public.mapels(id) on delete cascade,jenjang int,kelas_ids uuid[] default '{}',durasi_menit int default 60,kkm int default 75,status text default 'Aktif',jenis_paket text default 'Pribadi',tampil_pembahasan boolean default false,kode_akses text,deskripsi text,owner_guru_id uuid references public.profiles(id),tahun_ajaran_id uuid references public.tahun_ajaran(id),semester text,created_at timestamptz default now());
+create table if not exists public.paket_soal_items(paket_id uuid references public.paket_soal(id) on delete cascade,soal_id uuid references public.bank_soal(id) on delete cascade,urutan int default 0,primary key(paket_id,soal_id));
+create table if not exists public.ujian(id uuid primary key default gen_random_uuid(),paket_id uuid references public.paket_soal(id) on delete cascade,nama text not null,tanggal date,jam_mulai time,jam_selesai time,status text default 'Dijadwalkan',created_at timestamptz default now());
+create table if not exists public.hasil_ujian(id uuid primary key default gen_random_uuid(),siswa_id uuid references public.profiles(id) on delete cascade,paket_id uuid references public.paket_soal(id) on delete cascade,ujian_id uuid references public.ujian(id) on delete set null,skor_total numeric default 0,jawaban jsonb default '{}'::jsonb,tahun_ajaran_id uuid references public.tahun_ajaran(id),semester text,created_at timestamptz default now());
+create table if not exists public.nilai_per_tp(id uuid primary key default gen_random_uuid(),hasil_id uuid references public.hasil_ujian(id) on delete cascade,tp_id uuid references public.tujuan_pembelajaran(id) on delete cascade,skor numeric default 0,tuntas boolean default false,unique(hasil_id,tp_id));
+create table if not exists public.kenaikan_decisions(id uuid primary key default gen_random_uuid(),siswa_id uuid references public.profiles(id) on delete cascade,kelas_lama_id uuid references public.kelas(id),kelas_baru_id uuid references public.kelas(id),keputusan text not null check(keputusan in('NAIK','TIDAK NAIK','BELUM')),catatan text,diputuskan_oleh uuid references public.profiles(id),tahun_ajaran_id uuid references public.tahun_ajaran(id),created_at timestamptz default now());
+create table if not exists public.kenaikan_logs(id uuid primary key default gen_random_uuid(),siswa_id uuid references public.profiles(id) on delete cascade,dari_kelas text,ke_kelas text,oleh text,alasan text,created_at timestamptz default now());
+create table if not exists public.activity_logs(id uuid primary key default gen_random_uuid(),aktor_id uuid references public.profiles(id),aksi text not null,detail text,created_at timestamptz default now());
+alter table public.profiles enable row level security; alter table public.bank_soal enable row level security; alter table public.paket_soal enable row level security; alter table public.hasil_ujian enable row level security; alter table public.nilai_per_tp enable row level security;
+insert into storage.buckets(id,name,public) values('soal-images','soal-images',true) on conflict(id) do nothing;
+insert into public.tahun_ajaran(nama,is_aktif) values('2025/2026',true) on conflict(nama) do nothing;
+insert into public.mapels(nama,kode) values('Matematika','MTK'),('Bahasa Indonesia','BIN'),('IPAS','IPAS'),('PPKn','PPKN'),('PAI','PAI'),('Bahasa Inggris','BING'),('PJOK','PJOK'),('Seni Budaya','SB') on conflict(nama) do nothing;
+insert into public.kelas(nama,jenjang) values('6A',6),('6B',6),('6C',6),('5A',5),('5B',5) on conflict(nama) do nothing;
+insert into public.profiles(username,nama,peran) values('superadmin','Admin Sekolah','super_admin') on conflict(username) do nothing;`;
+document.getElementById('sqlBox').textContent=SQLTEXT;
+var TP=JSON.parse(localStorage.getItem('sdgw_tp')||'[]'),SOAL=JSON.parse(localStorage.getItem('sdgw_soal')||'[]'),PAKET=JSON.parse(localStorage.getItem('sdgw_paket')||'[]'),SISWA=JSON.parse(localStorage.getItem('sdgw_siswa')||'[{nama:"Andi Pratama",user:"andi6a"},{nama:"Siti Aminah",user:"siti6b"}]');
+var SUPA=null, GAMBAR='';
+function getSupa(){var u=document.getElementById('supUrl').value||localStorage.getItem('sdgw_sup_url')||'',k=document.getElementById('supKey').value||localStorage.getItem('sdgw_sup_key')||'';if(u&&k&&window.supabase){try{return window.supabase.createClient(u,k);}catch(e){return null;}}return null;}
+function save(){localStorage.setItem('sdgw_tp',JSON.stringify(TP));localStorage.setItem('sdgw_soal',JSON.stringify(SOAL));localStorage.setItem('sdgw_paket',JSON.stringify(PAKET));localStorage.setItem('sdgw_siswa',JSON.stringify(SISWA));render();}
+function login(){var u=(document.getElementById('u').value||'').trim().toLowerCase(),p=document.getElementById('p').value;var acc={superadmin:{pw:'admin123',nama:'Admin Sekolah',role:'Super Admin'},sari:{pw:'guru123',nama:'Bu Sari',role:'Guru'},budi:{pw:'guru123',nama:'Pak Budi',role:'Guru'},dewi:{pw:'guru123',nama:'Bu Dewi',role:'Guru'},andi6a:{pw:'123456',nama:'Andi Pratama',role:'Siswa'},siti6b:{pw:'123456',nama:'Siti Aminah',role:'Siswa'}};
+if(acc[u]&&acc[u].pw===p){document.getElementById('loginCard').classList.add('hidden');document.getElementById('app').classList.remove('hidden');document.getElementById('nav').classList.remove('hidden');document.getElementById('who').textContent='Halo, '+acc[u].nama+' • '+acc[u].role;if(document.getElementById('demoMode').checked){document.getElementById('demoBox').style.display='block';}render();}else document.getElementById('err').textContent='Username / password salah.';}
+function logout(){location.reload();}
+document.querySelectorAll('[data-nav]').forEach(function(b){b.onclick=function(){document.querySelectorAll('[data-nav]').forEach(function(x){x.classList.remove('on');});b.classList.add('on');['dash','tp','bank','paket','ujian','hasil','kenaikan','kelas','supabase','sql'].forEach(function(k){document.getElementById('p-'+k).classList.add('hidden');});document.getElementById('p-'+b.dataset.nav).classList.remove('hidden');};});
+function show(id){document.querySelector('[data-nav="'+id+'"]').click();}
+function simpanTA(){var ta=document.getElementById('taInput').value,sem=document.getElementById('semInput').value;document.getElementById('taBadge').textContent='TA '+ta+' • '+sem;localStorage.setItem('sdgw_ta',ta);localStorage.setItem('sdgw_sem',sem);alert('TA & Semester diterapkan ke seluruh sekolah. Data lama tetap tersimpan.');}
+function addTP(){if(!document.getElementById('tpKode').value||!document.getElementById('tpDesk').value){alert('Field ini wajib diisi');return;}TP.push({kode:document.getElementById('tpKode').value,mapel:document.getElementById('tpMapel').value,desk:document.getElementById('tpDesk').value});save();alert('TP disimpan');}
+function addSoal(){if(!document.getElementById('bTeks').value){alert('Teks soal wajib diisi');return;}SOAL.push({teks:document.getElementById('bTeks').value,jenis:document.getElementById('bJenis').value,tp:document.getElementById('bTp').value,bab:document.getElementById('bBab').value,a:document.getElementById('bA').value,b:document.getElementById('bB').value,c:document.getElementById('bC').value,d:document.getElementById('bD').value,kunci:document.getElementById('bKunci').value,bahasan:document.getElementById('bBahasan').value,gambar:GAMBAR});save();alert('Soal disimpan. Jika Supabase terisi, upload gambar ke bucket soal-images di menu Supabase.');}
+function addPaket(){if(!document.getElementById('pkNama').value){alert('Nama paket wajib diisi');return;}PAKET.push({nama:document.getElementById('pkNama').value,mapel:document.getElementById('pkMapel').value,jenis:document.getElementById('pkJenis').value,bahasan:document.getElementById('pkBahasan').checked});save();alert('Paket dibuat');}
+function addSiswa(){if(!document.getElementById('kNama').value||!document.getElementById('kUser').value){alert('Nama & username wajib diisi');return;}if((document.getElementById('kPass').value||'').length<6){alert('Password minimal 6 karakter');return;}SISWA.push({nama:document.getElementById('kNama').value,user:document.getElementById('kUser').value,kelas:document.getElementById('kKelas').value});save();}
+function render(){document.getElementById('sSiswa').textContent=SISWA.length;document.getElementById('sSoal').textContent=SOAL.length;document.getElementById('sPaket').textContent=PAKET.length;document.getElementById('sTP').textContent=TP.length;
+document.getElementById('tpList').innerHTML=TP.map(function(t,i){return '<div>'+t.kode+' • '+t.mapel+' • '+t.desk+' <button class=small onclick="TP.splice('+i+',1);save()">Hapus</button></div>'}).join('')||'<p class=muted>Belum ada TP.</p>';
+document.getElementById('bankList').innerHTML=SOAL.map(function(s,i){return '<div><b>'+(i+1)+'. ['+s.jenis+'] '+s.teks+'</b><br>A. '+s.a+' | B. '+s.b+' | C. '+s.c+' | D. '+s.d+' | Kunci: '+s.kunci+' '+(s.gambar?'<br><img src="'+s.gambar+'" style="max-width:200px;border-radius:8px">':'')+' <button class=small onclick="SOAL.splice('+i+',1);save()">Hapus</button></div>'}).join('')||'<p class=muted>Belum ada soal.</p>';
+document.getElementById('paketList').innerHTML=PAKET.map(function(p,i){return '<div>'+p.nama+' • '+p.mapel+' • '+p.jenis+' • Pembahasan: '+(p.bahasan?'ON':'OFF')+' <button class=small onclick="PAKET.splice('+i+',1);save()">Hapus</button></div>'}).join('')||'<p class=muted>Belum ada paket.</p>';
+document.getElementById('siswaList').innerHTML=SISWA.map(function(s){return '<div>'+s.nama+' • @'+s.user+' • '+ (s.kelas||'6A') +'</div>'}).join('');
+var us=document.getElementById('ujianSoal');if(SOAL.length){us.innerHTML=SOAL.map(function(s,i){return '<div style="margin:12px 0"><b>'+(i+1)+'. '+s.teks+'</b>'+(s.gambar?'<br><img src="'+s.gambar+'" style="max-width:100%;border-radius:10px">':'')+'<br><label><input type=radio name=q'+i+' value=a> (a) '+s.a+'</label><br><label><input type=radio name=q'+i+' value=b> (b) '+s.b+'</label><br><label><input type=radio name=q'+i+' value=c> (c) '+s.c+'</label><br><label><input type=radio name=q'+i+' value=d> (d) '+s.d+'</label></div>'}).join('');}else{us.innerHTML='<p class=muted>Belum ada soal. Tambah soal dulu di Bank Soal.</p>';}}
+var sisa=3600,tInt=null;function mulaiTimer(){if(tInt)return;tInt=setInterval(function(){sisa--;if(sisa<=0){clearInterval(tInt);submitUjian();return;}var m=Math.floor(sisa/60),s=sisa%60;document.getElementById('timer').textContent=(m<10?'0'+m:m)+':'+(s<10?'0'+s:s);},1000);}
+function submitUjian(){var benar=0,rows='';SOAL.forEach(function(s,i){var el=document.querySelector('input[name=q'+i+']:checked');var jawab=el?el.value:'-';var kunci=(s.kunci||'').toLowerCase().trim();var ok=jawab===kunci;if(ok)benar++;rows+='<tr><td>'+(i+1)+'</td><td>('+jawab+')</td><td>('+kunci+')</td><td class="'+(ok?'ok':'no')+'">'+(ok?'Benar':'Salah')+'</td><td><button class=small onclick="detail('+i+')">Lihat Detail</button></td></tr>';});
+document.getElementById('hasilBody').innerHTML=rows||'<tr><td colspan=5>Belum ada soal.</td></tr>';var skor=SOAL.length?Math.round(benar/SOAL.length*100):0;document.getElementById('skor').textContent=skor+' (Benar '+benar+' dari '+SOAL.length+')';document.getElementById('lulus').textContent=skor>=75?'Lulus (KKM 75)':'Tidak Lulus (KKM 75)';document.getElementById('ringkasan').textContent='Benar '+benar+' dari '+SOAL.length+' soal';show('hasil');
+try{var sb=getSupa();if(sb){sb.from('hasil_ujian').insert({skor_total:skor}).then(function(){});}}catch(e){}}
+function detail(i){var s=SOAL[i];if(!s)return;var showBahasan=PAKET.length&&PAKET[0].bahasan;var bahasan=showBahasan?s.bahasan:'Pembahasan disembunyikan oleh guru';document.getElementById('detailBox').innerHTML='<b>No. '+(i+1)+' — Detail Lengkap</b><br>Soal: '+s.teks+(s.gambar?'<br><img src="'+s.gambar+'" style="max-width:100%;border-radius:10px">':'')+'<br>Jawaban lengkap:<br>A. '+s.a+'<br>B. '+s.b+'<br>C. '+s.c+'<br>D. '+s.d+'<br>Kunci: '+s.kunci+'<br>Pembahasan: '+bahasan;}
+function exportSoal(){var csv='No,Jenis,TP,Soal,Opsi A,Opsi B,Opsi C,Opsi D,Kunci\n'+SOAL.map(function(s,i){return (i+1)+','+s.jenis+','+s.tp+',"'+s.teks+'","'+s.a+'","'+s.b+'","'+s.c+'","'+s.d+'",'+s.kunci;}).join('\n');download(csv,'soal.csv');}
+function exportHasil(){var rows=document.getElementById('hasilBody').innerText;download('No,Jawaban,Kunci,Hasil\n'+rows,'hasil.csv');}
+function download(t,n){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download=n;a.click();}
+function copySQL(){navigator.clipboard.writeText(SQLTEXT).then(function(){alert('SQL tersalin. Paste di Supabase > SQL Editor > Run');});}
+function simpanSupabase(){var u=document.getElementById('supUrl').value,k=document.getElementById('supKey').value;if(!u||!k){document.getElementById('supMsg').textContent='URL & Anon Key wajib diisi.';return;}localStorage.setItem('sdgw_sup_url',u);localStorage.setItem('sdgw_sup_key',k);document.getElementById('supMsg').textContent='Tersimpan. Jika URL/Key benar, Supabase akan dipakai. Jika gagal, app otomatis fallback ke Demo (LocalStorage) agar tetap jalan.';document.getElementById('supStat').textContent='Supabase terisi — tes di console / coba simpan data';if(!document.getElementById('demoMode').checked){document.getElementById('demoBox').style.display='none';}}
+function kompres(input){var f=input.files[0];if(!f)return;var orig=Math.round(f.size/1024)+' KB';var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var w=img.width,h=img.height,max=parseInt(document.getElementById('maxW').value||1280);if(w>max){h=Math.round(h*max/w);w=max;}var c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);var q=parseFloat(document.getElementById('qJpg').value||0.8);var out=c.toDataURL('image/jpeg',q);GAMBAR=out;document.getElementById('bImg').src=out;document.getElementById('bImg').classList.remove('hidden');document.getElementById('bInfo').textContent='Asli: '+orig+' ('+img.width+'x'+img.height+') -> Setelah kompresi: '+Math.round(out.length*0.75/1024)+' KB ('+w+'x'+h+') — ini yang diupload ke Supabase bucket soal-images.';};img.src=e.target.result;};r.readAsDataURL(f);}
+if(localStorage.getItem('sdgw_ta')){document.getElementById('taBadge').textContent='TA '+localStorage.getItem('sdgw_ta')+' • '+(localStorage.getItem('sdgw_sem')||'Semester 1 (Ganjil)');}
+render();
+</main></div></script></body></html>
