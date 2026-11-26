@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ASAS-SDGW V1.0</title>
+<style>body{font-family:system-ui,Arial;margin:0;background:#f1f5f9;color:#0f172a}header{background:#0f766e;color:#fff;padding:18px;text-align:center}header b{font-size:22px}.card{max-width:520px;margin:18px auto;background:#fff;border-radius:14px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,.08)}input{width:100%;padding:12px;margin:8px 0;border:1px solid #cbd5e1;border-radius:10px;box-sizing:border-box}button{width:100%;padding:12px;background:#0f766e;color:#fff;border:0;border-radius:10px;font-weight:700}table{width:100%;border-collapse:collapse;margin-top:12px}td,th{border:1px solid #e2e8f0;padding:8px;text-align:center}.ok{color:#15803d;font-weight:700}.no{color:#dc2626;font-weight:700}.muted{color:#64748b;font-size:13px}.hidden{display:none}.chip{display:inline-block;background:#ccfbf1;padding:4px 10px;border-radius:20px;font-size:12px}</style></head>
+<body><header><b>ASAS-SDGW V1.0</b><div>Asesmen Sumatif Akhir Semester - SDGW • TA 2025/2026 • Semester 1 (Ganjil)</div></header>
+<div class="card" id="loginCard"><h2>Masuk</h2><p class="muted">File ini .html murni. Buka di Brave / Chrome HP langsung jalan, tanpa extract.</p>
+<input id="u" placeholder="Username — contoh: superadmin / sari / andi6a"><input id="p" type="password" placeholder="Password — superadmin: admin123, guru: guru123, siswa: 123456">
+<button onclick="login()">Masuk</button><p id="err" class="no"></p>
+<div class="muted">Akun demo (matikan di versi sekolah):<br>Super Admin: superadmin / admin123<br>Guru: sari / guru123<br>Siswa: andi6a / 123456</div></div>
+<div class="card hidden" id="dash"><h2>Dasbor <span class="chip" id="role"></span></h2><p>Halo, <b id="nama"></b> • TA 2025/2026 • Semester 1 (Ganjil)</p>
+<p><b>Contoh Hasil Setelah Submit — Tampilan Sederhana</b></p>
+<table><tr><th>No.</th><th>Jawaban</th><th>Kunci</th><th>Hasil</th><th>Aksi</th></tr>
+<tr><td>1</td><td>(a)</td><td>(b)</td><td class="no">Salah</td><td><button style="width:auto;padding:6px 10px" onclick="detail(1)">Lihat Detail</button></td></tr>
+<tr><td>2</td><td>(c)</td><td>(c)</td><td class="ok">Benar</td><td><button style="width:auto;padding:6px 10px" onclick="detail(2)">Lihat Detail</button></td></tr>
+<tr><td>3</td><td>(-)</td><td>(a)</td><td class="no">Salah</td><td><button style="width:auto;padding:6px 10px" onclick="detail(3)">Lihat Detail</button></td></tr></table>
+<div id="d" style="margin-top:14px;background:#f8fafc;padding:12px;border-radius:10px"></div>
+<p class="muted">Versi lengkap dengan Bank Soal, Paket Paralel, TP, Kenaikan Kelas, Supabase ada di aplikasi utama. File .html ini adalah versi ringan yang bisa diunduh langsung tanpa tar.gz.</p>
+<button onclick="location.reload()">Keluar</button></div>
+<script>function login(){var u=document.getElementById('u').value.trim().toLowerCase(),p=document.getElementById('p').value;
+var acc={superadmin:{pw:'admin123',nama:'Admin Sekolah',role:'Super Admin'},sari:{pw:'guru123',nama:'Bu Sari',role:'Guru'},andi6a:{pw:'123456',nama:'Andi Pratama',role:'Siswa'}};
+if(acc[u]&&acc[u].pw===p){document.getElementById('loginCard').classList.add('hidden');document.getElementById('dash').classList.remove('hidden');document.getElementById('nama').textContent=acc[u].nama;document.getElementById('role').textContent=acc[u].role;}
+else document.getElementById('err').textContent='Username / password salah. Coba superadmin / admin123';}
+function detail(n){var t={1:'<b>No. 1 — Detail Lengkap</b><br>Soal: Hewan yang berjalan lambat dan membawa rumahnya adalah...<br>Jawaban Kamu: (a) Siput<br>Kunci: (b) Kura-kura<br>Hasil: Salah<br>Pembahasan: Kura-kura yang dimaksud pada soal ini...',2:'<b>No. 2 — Detail Lengkap</b><br>Soal: Proses membuat makanan pada tumbuhan disebut...<br>Jawaban Kamu: (c) Fotosintesis<br>Kunci: (c) Fotosintesis<br>Hasil: Benar<br>Pembahasan: Fotosintesis terjadi di daun...',3:'<b>No. 3 — Detail Lengkap</b><br>Soal: ...<br>Jawaban Kamu: (-) Tidak Dijawab<br>Kunci: (a)<br>Hasil: Salah<br>Pembahasan: ...'};document.getElementById('d').innerHTML=t[n];}</script>
+</body></html>
