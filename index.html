@@ -33,7 +33,11 @@ img.prev{max-width:100%;border-radius:12px;margin-top:8px}pre{white-space:pre-wr
 <div class="card" id="loginCard"><h2>Masuk — ASAS-SDGW V1.0</h2>
 <p class="muted">Username + Password saja. Demo: superadmin/admin123 | sari/guru123 | andi6a/123456. Di produksi matikan Mode Demo agar nama demo hilang.</p>
 <input id="u" placeholder="Username"><input id="p" type="password" placeholder="Password">
-<button class="primary" onclick="login()">Masuk</button><p id="err" class="no"></p>
+<button class="primary" onclick="login()">Masuk</button>
+<button class="primary" style="background:#059669;margin-top:8px" onclick="autoLogin('superadmin','admin123')">⚡ Klik Ini Untuk Masuk Sebagai Super Admin (Tanpa Ketik)</button>
+<button class="primary" style="background:#2563eb;margin-top:8px" onclick="autoLogin('sari','guru123')">Masuk Sebagai Guru Sari</button>
+<button class="primary" style="background:#dc2626;margin-top:8px" onclick="autoLogin('andi6a','123456')">Masuk Sebagai Siswa Andi</button>
+<p id="err" class="no"></p><p id="debug" class="muted"></p>
 <div id="demoBox" class="muted">Akun demo:<br>Super Admin: superadmin / admin123<br>Guru: sari / guru123<br>Siswa: andi6a / 123456</div></div>
 
 <div id="app" class="hidden">
@@ -139,8 +143,9 @@ var TP=JSON.parse(localStorage.getItem('sdgw_tp')||'[]'),SOAL=JSON.parse(localSt
 var SUPA=null, GAMBAR='';
 function getSupa(){var u=document.getElementById('supUrl').value||localStorage.getItem('sdgw_sup_url')||'',k=document.getElementById('supKey').value||localStorage.getItem('sdgw_sup_key')||'';if(u&&k&&window.supabase){try{return window.supabase.createClient(u,k);}catch(e){return null;}}return null;}
 function save(){localStorage.setItem('sdgw_tp',JSON.stringify(TP));localStorage.setItem('sdgw_soal',JSON.stringify(SOAL));localStorage.setItem('sdgw_paket',JSON.stringify(PAKET));localStorage.setItem('sdgw_siswa',JSON.stringify(SISWA));render();}
-function login(){var u=(document.getElementById('u').value||'').trim().toLowerCase(),p=document.getElementById('p').value;var acc={superadmin:{pw:'admin123',nama:'Admin Sekolah',role:'Super Admin'},sari:{pw:'guru123',nama:'Bu Sari',role:'Guru'},budi:{pw:'guru123',nama:'Pak Budi',role:'Guru'},dewi:{pw:'guru123',nama:'Bu Dewi',role:'Guru'},andi6a:{pw:'123456',nama:'Andi Pratama',role:'Siswa'},siti6b:{pw:'123456',nama:'Siti Aminah',role:'Siswa'}};
-if(acc[u]&&acc[u].pw===p){document.getElementById('loginCard').classList.add('hidden');document.getElementById('app').classList.remove('hidden');document.getElementById('nav').classList.remove('hidden');document.getElementById('who').textContent='Halo, '+acc[u].nama+' • '+acc[u].role;if(document.getElementById('demoMode').checked){document.getElementById('demoBox').style.display='block';}render();}else document.getElementById('err').textContent='Username / password salah.';}
+function autoLogin(u,p){document.getElementById('u').value=u;document.getElementById('p').value=p;login();}
+function login(){try{document.getElementById('debug').textContent='Mencoba login...';var u=(document.getElementById('u').value||'').trim().toLowerCase().replace(/\s+/g,''),p=(document.getElementById('p').value||'').trim();var acc={superadmin:{pw:'admin123',nama:'Admin Sekolah',role:'Super Admin'},sari:{pw:'guru123',nama:'Bu Sari',role:'Guru'},budi:{pw:'guru123',nama:'Pak Budi',role:'Guru'},dewi:{pw:'guru123',nama:'Bu Dewi',role:'Guru'},andi6a:{pw:'123456',nama:'Andi Pratama',role:'Siswa'},siti6b:{pw:'123456',nama:'Siti Aminah',role:'Siswa'}};
+if(acc[u]&&acc[u].pw===p){document.getElementById('loginCard').classList.add('hidden');document.getElementById('app').classList.remove('hidden');document.getElementById('nav').classList.remove('hidden');document.getElementById('who').textContent='Halo, '+acc[u].nama+' • '+acc[u].role;if(document.getElementById('demoMode').checked){document.getElementById('demoBox').style.display='block';}render();}else{document.getElementById('err').textContent='Username / password salah. Yang kamu ketik: ['+u+'] / ['+p+'] — yang benar: superadmin / admin123';document.getElementById('debug').textContent='JS jalan. Cek typo: superadmin (pakai P, bukan L).';} }catch(e){document.getElementById('err').textContent='Error JS: '+e.message;}}
 function logout(){location.reload();}
 document.querySelectorAll('[data-nav]').forEach(function(b){b.onclick=function(){document.querySelectorAll('[data-nav]').forEach(function(x){x.classList.remove('on');});b.classList.add('on');['dash','tp','bank','paket','ujian','hasil','kenaikan','kelas','supabase','sql'].forEach(function(k){document.getElementById('p-'+k).classList.add('hidden');});document.getElementById('p-'+b.dataset.nav).classList.remove('hidden');};});
 function show(id){document.querySelector('[data-nav="'+id+'"]').click();}
